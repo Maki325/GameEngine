@@ -1,6 +1,6 @@
 package engine.utils;
 
-import engine.Display;
+import test.Main;
 
 public class Logger {
 	
@@ -11,16 +11,14 @@ public class Logger {
 		}
 		
 		if(level.getLevel() >= 2) {
-			System.err.println(message);
+			System.err.println(level.getName().toUpperCase() + ": " + message);
 			
-			if(level.getLevel() == 3) {
-				Display.isRunning = false;
-			}
+			if(level.getLevel() == 3) Main.window.stop();
 			
 			return;
 		}
 		
-		System.out.println(message);
+		System.out.println(level.getName().toUpperCase() + ": " + message);
 	}
 	
 }
