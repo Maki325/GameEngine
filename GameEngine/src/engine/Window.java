@@ -1,13 +1,15 @@
 package engine;
 
 import java.nio.DoubleBuffer;
+import java.nio.IntBuffer;
 
-import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
+
+import engine.maths.Vector3f;
 
 public class Window {
 
@@ -23,14 +25,23 @@ public class Window {
 	
 	private Vector3f backgroundColor;
 	
+	private boolean isFullscreen;
+	
+	private GLFWVidMode vidmode;
+	
 	private boolean[] keys = new boolean[GLFW.GLFW_KEY_LAST];
 	private boolean[] mouseButtons = new boolean[GLFW.GLFW_MOUSE_BUTTON_LAST];
 	
 	public Window(int width, int height, int fps, String title) {
+		this(width, height, fps, title, false);
+	}
+	
+	public Window(int width, int height, int fps, String title, boolean fullscreen) {
 		this.width = width;
 		this.height = height;
 		this.title = title;
 		this.fps_cap = fps;
+		this.isFullscreen = fullscreen;
 		backgroundColor = new Vector3f(0.0f, 0.0f, 0.0f);
 	}
 	
@@ -39,16 +50,21 @@ public class Window {
 			throw new IllegalStateException("Unable to initialize GLFW");
 		
 		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
-		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_FALSE);
-		window = GLFW.glfwCreateWindow(width, height, title, 0, 0);
+		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE);
+		
+		vidmode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
+		
+		if(isFullscreen)
+			window = GLFW.glfwCreateWindow(vidmode.width(), vidmode.height(), title, GLFW.glfwGetPrimaryMonitor(), window);
+		else
+			window = GLFW.glfwCreateWindow(width, height, title, 0, window);
 		
 		if ( window == 0 )
 			throw new RuntimeException("Failed to create the GLFW window");
 		
 		GLFW.glfwMakeContextCurrent(window);
 		GL.createCapabilities();
-		
-		GLFWVidMode vidmode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
+		//GL11.glEnable(GL11.GL_DEPTH_TEST);
 
 		GLFW.glfwSetWindowPos(
 			window,
@@ -65,16 +81,29 @@ public class Window {
 		return GLFW.glfwWindowShouldClose(window);
 	}
 	
+	public void close() {
+		GLFW.glfwSetWindowShouldClose(window, true);
+	}
+	
 	public void update() {
 		for(int i = 0;i < GLFW.GLFW_KEY_LAST;i++) keys[i] = isKeyDown(i);
 		for(int i = 0;i < GLFW.GLFW_MOUSE_BUTTON_LAST;i++) mouseButtons[i] = isMouseDown(i);
-		GL11.glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, 1.0f);
+		
+		IntBuffer widthBuffer = BufferUtils.createIntBuffer(1);
+		IntBuffer heightBuffer = BufferUtils.createIntBuffer(1);
+		GLFW.glfwGetWindowSize(window, widthBuffer, heightBuffer);
+		width = widthBuffer.get(0);
+		height = heightBuffer.get(0);
+		GL11.glViewport(0, 0, width, height);
+		
+		GL11.glClearColor(backgroundColor.getX(), backgroundColor.getY(), backgroundColor.getZ(), 1.0f);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 		GLFW.glfwPollEvents();
 	}
 	
 	public void stop() {
 		GLFW.glfwTerminate();
+		GLFW.glfwDestroyWindow(window);
 	}
 	
 	public void swapBuffers() {
@@ -159,6 +188,10 @@ public class Window {
 	
 	public void setBackgroundColor(float r, float g, float b) {
 		backgroundColor = new Vector3f(r, g, b);
+	}
+	
+	public boolean isFullscreen() {
+		return isFullscreen;
 	}
 	
 }

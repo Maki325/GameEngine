@@ -1,7 +1,5 @@
 package engine.utils;
 
-import test.Main;
-
 public class Logger {
 	
 	public static void log(Level level, Object... info) {
@@ -13,7 +11,7 @@ public class Logger {
 		if(level.getLevel() >= 2) {
 			System.err.println(level.getName().toUpperCase() + ": " + message);
 			
-			if(level.getLevel() == 3) Main.window.stop();
+			if(level.getLevel() == 3) System.exit(0);
 			
 			return;
 		}

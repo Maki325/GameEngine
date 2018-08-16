@@ -1,8 +1,10 @@
 # eclipse
 bin
-*.launch
-.settings
 .metadata
+.recommenders
+
+# project files
+.settings
+bin
 .classpath
 .project
-.recommenders
