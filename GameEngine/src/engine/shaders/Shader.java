@@ -10,7 +10,10 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
 import engine.maths.Matrix4f;
+import engine.maths.Vector2f;
 import engine.maths.Vector3f;
+import engine.utils.Level;
+import engine.utils.Logger;
  
 public abstract class Shader {
     private int programID, vertexShaderID, fragmentShaderID;
@@ -89,19 +92,23 @@ public abstract class Shader {
     	return GL20.glGetUniformLocation(programID, name);
     }
     
-    protected void loadFloatUniform(int location, float value) {
+    protected void loadFloat(int location, float value) {
     	GL20.glUniform1f(location, value);
     }
     
-    protected void loadIntUniform(int location, int value) {
+    protected void loadInt(int location, int value) {
     	GL20.glUniform1i(location, value);
     }
     
-    protected void loadVectorUniform(int location, Vector3f value) {
+    protected void loadVector3f(int location, Vector3f value) {
     	GL20.glUniform3f(location, value.getX(), value.getY(), value.getZ());
     }
+
+    protected void loadVector2f(int location_translation, Vector2f translation) {
+		GL20.glUniform2f(location_translation, translation.x, translation.y);
+	}
     
-    protected void loadMatrixUniform(int location, Matrix4f value) {
+    protected void loadMatrix(int location, Matrix4f value) {
     	FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
     	
     	for (int i = 0; i < 4; i++) {
@@ -125,7 +132,7 @@ public abstract class Shader {
             }
             reader.close();
         } catch (IOException e) {
-            System.err.println("Error: Couldn't find file");
+        	Logger.log(Level.ERROR, "Couldn't find file: ", file);
             System.exit(-1);
         }
         return string.toString();

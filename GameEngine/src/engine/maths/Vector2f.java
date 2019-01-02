@@ -1,7 +1,9 @@
 package engine.maths;
 
 public class Vector2f {
-	private float x, y;
+	
+	public float x, y;
+	
 	public Vector2f() {
 		x = 0;
 		y = 0;

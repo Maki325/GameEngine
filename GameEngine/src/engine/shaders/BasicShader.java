@@ -9,7 +9,7 @@ public class BasicShader extends Shader {
     
     private int tvpMatrixLocation;
     
-    private Matrix4f transformationMatrix = new Matrix4f().identity();
+    private Matrix4f transformationMatrix = new Matrix4f().identity(), projectionMatrix = new Matrix4f().identity();
  
     public BasicShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
@@ -27,7 +27,11 @@ public class BasicShader extends Shader {
 	}
 	
 	public void useMatrices() {
-		super.loadMatrixUniform(tvpMatrixLocation, transformationMatrix);
+		super.loadMatrix(tvpMatrixLocation, projectionMatrix.mul(transformationMatrix));
+	}
+	
+	public void loadProjectionMatrix(Matrix4f projectionMatrix) {
+		this.projectionMatrix = projectionMatrix;
 	}
 	
 	public void loadTransformationMatrix(Matrix4f matrix) {

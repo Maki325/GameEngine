@@ -1,46 +1,23 @@
 package engine.rendering.models;
 
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL30;
-
 import engine.rendering.Material;
 
-public class TexturedModel extends Model {
+public class TexturedModel {
 	
-	private int vertexArrayID, vertexBufferID, textureCoordsBufferID, indicesBufferID, vertexCount;
-	
+	private RawModel model;
 	private Material material;
     
-    public TexturedModel(float[] vertices, float[] textureCoords, int[] indices, String file) {
-    	vertexArrayID = super.createVertexArray();
-    	indicesBufferID = super.bindIndicesBuffer(indices);
-        vertexBufferID = super.storeData(0, 3, vertices);
-        textureCoordsBufferID = super.storeData(1, 2, textureCoords);
-		vertexCount = indices.length;
-        GL30.glBindVertexArray(0);
-        
-        material = new Material(file);
-    }
-    
-    public void remove() {
-    	GL30.glDeleteVertexArrays(vertexArrayID);
-    	GL15.glDeleteBuffers(vertexBufferID);
-    	GL15.glDeleteBuffers(textureCoordsBufferID);
-    	GL15.glDeleteBuffers(indicesBufferID);
-    	
-    	material.remove();
+    public TexturedModel(RawModel model, Material material) {
+        this.model = model;
+        this.material = material;
     }
  
-    public int getVertexArrayID() {
-        return vertexArrayID;
-    }
- 
-    public int getVertexCount() {
-        return vertexCount;
-    }
-    
     public Material getMaterial() {
 		return material;
+	}
+    
+    public RawModel getRawModel() {
+		return model;
 	}
     
 }

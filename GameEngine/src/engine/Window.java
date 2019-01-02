@@ -5,10 +5,12 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
+import engine.io.Image;
 import engine.maths.Vector3f;
 
 public class Window {
@@ -29,20 +31,30 @@ public class Window {
 	
 	private GLFWVidMode vidmode;
 	
+	private GLFWImage.Buffer iconBuffer;
+	
 	private boolean[] keys = new boolean[GLFW.GLFW_KEY_LAST];
 	private boolean[] mouseButtons = new boolean[GLFW.GLFW_MOUSE_BUTTON_LAST];
 	
 	public Window(int width, int height, int fps, String title) {
-		this(width, height, fps, title, false);
+		this(width, height, fps, title, null, false);
 	}
 	
-	public Window(int width, int height, int fps, String title, boolean fullscreen) {
+	public Window(int width, int height, int fps, String title, String icon) {
+		this(width, height, fps, title, null, false);
+	}
+	
+	public Window(int width, int height, int fps, String title, String icon, boolean fullscreen) {
 		this.width = width;
 		this.height = height;
 		this.title = title;
 		this.fps_cap = fps;
 		this.isFullscreen = fullscreen;
 		backgroundColor = new Vector3f(0.0f, 0.0f, 0.0f);
+		if(icon != null)
+			setIcon(icon);
+		else
+			iconBuffer = null;
 	}
 	
 	public void create() {
@@ -64,13 +76,17 @@ public class Window {
 		
 		GLFW.glfwMakeContextCurrent(window);
 		GL.createCapabilities();
-		//GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
 
 		GLFW.glfwSetWindowPos(
 			window,
 			(vidmode.width() - width) / 2,
 			(vidmode.height() - height) / 2
 		);
+		
+		if(iconBuffer != null) {
+			GLFW.glfwSetWindowIcon(window, iconBuffer);
+		}
 		
 		GLFW.glfwShowWindow(window);
 		
@@ -95,9 +111,9 @@ public class Window {
 		width = widthBuffer.get(0);
 		height = heightBuffer.get(0);
 		GL11.glViewport(0, 0, width, height);
-		
+
 		GL11.glClearColor(backgroundColor.getX(), backgroundColor.getY(), backgroundColor.getZ(), 1.0f);
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		GLFW.glfwPollEvents();
 	}
 	
@@ -192,6 +208,14 @@ public class Window {
 	
 	public boolean isFullscreen() {
 		return isFullscreen;
+	}
+	
+	public void setIcon(String path) {
+		Image icon = Image.loadImage("res/textures/" + path);
+		GLFWImage iconImage = GLFWImage.malloc();
+		iconBuffer = GLFWImage.malloc(1);
+		iconImage.set(icon.getWidth(), icon.getHeight(), icon.getImage());
+		iconBuffer.put(0, iconImage);
 	}
 	
 }

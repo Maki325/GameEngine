@@ -1,0 +1,15 @@
+	TexturedModel model = new TexturedModel(new float[] { 
+		-0.5f,  0.5f, 0.0f, //top left
+		 0.5f,  0.5f, 0.0f, //top right
+		 0.5f, -0.5f, 0.0f, //bottom right
+		-0.5f, -0.5f, 0.0f, //bottom left
+	}, new float[] { 
+			0, 0,//TOP LEFT
+			1, 0,//TOP RIGHT
+			1, 1,//BOTOOM RIGHT1
+			0, 1//BOTTOM LEFT
+	}, new int[] { 
+			0, 1, 2,
+			2, 3, 0
+	},
+	"image.png");
