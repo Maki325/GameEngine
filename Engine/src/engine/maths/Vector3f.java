@@ -73,6 +73,11 @@ public class Vector3f {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "Vector3f(" + x + ", " + y + ",  " + z + ")";
+    }
+
     public float getX() {
         return x;
     }

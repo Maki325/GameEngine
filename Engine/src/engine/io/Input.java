@@ -8,12 +8,13 @@ public class Input {
 	private static boolean[] buttnons = new boolean[GLFW.GLFW_MOUSE_BUTTON_LAST];
 	private static double mouseX, mouseY;
 	private static double scrollX, scrollY;
+	private static boolean mouseLock = false;
 	
 	private GLFWKeyCallback keyboard;
 	private GLFWCursorPosCallback mouseMove;
 	private GLFWMouseButtonCallback mouseButtons;
 	private GLFWScrollCallback mouseScroll;
-	
+
 	public Input() {
 		keyboard = new GLFWKeyCallback() {
 			@Override
@@ -50,7 +51,15 @@ public class Input {
 	public static boolean isButtonDown(int button) {
 		return buttnons[button];
 	}
-	
+
+    public static void setMouseLocked(boolean lock) {
+		mouseLock = lock;
+    }
+
+	public static boolean getMouseLock() {
+		return mouseLock;
+	}
+
 	public void destroy() {
 		keyboard.free();
 		mouseMove.free();

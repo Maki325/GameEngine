@@ -20,4 +20,9 @@ public class Vertex {
     public Vector2f getTextureCoord() {
         return textureCoord;
     }
+
+    @Override
+    public String toString() {
+        return "Position: " + position.toString() + ", Texture: " + textureCoord.toString();
+    }
 }

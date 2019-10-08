@@ -62,6 +62,11 @@ public class Vector2f {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "Vector2f(" + x + ", " + y + ")";
+    }
+
     public float getX() {
         return x;
     }

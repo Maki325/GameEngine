@@ -1,9 +1,11 @@
 package main;
 
-import engine.graphics.*;
+import engine.graphics.Mesh;
+import engine.graphics.Renderer;
+import engine.graphics.Shader;
 import engine.io.Input;
+import engine.io.OBJLoader;
 import engine.io.Window;
-import engine.maths.Vector2f;
 import engine.maths.Vector3f;
 import engine.objects.Camera;
 import engine.objects.GameObject;
@@ -15,9 +17,9 @@ public class Main implements Runnable {
 	public Window window;
 	public Renderer renderer;
 	public Shader shader;
-	public final int WIDTH = 1280, HEIGHT = 760;
+	public final int WIDTH = 1280, HEIGHT = 720;
 
-	public Mesh mesh = new Mesh(new Vertex[] {
+	public Mesh mesh = OBJLoader.load("/models/stall.obj", "/textures/stallTexture.png"); /*new Mesh(new Vertex[] {
 			//Back face
 			new Vertex(new Vector3f(-0.5f,  0.5f, -0.5f), new Vector2f(0.0f, 0.0f)),
 			new Vertex(new Vector3f(-0.5f, -0.5f, -0.5f), new Vector2f(0.0f, 1.0f)),
@@ -77,14 +79,15 @@ public class Main implements Runnable {
 			//Bottom face
 			20, 21, 23,
 			23, 21, 22
-	}, new Material("/textures/desert.png"));
+	}, new Material("/textures/desert.png"));*/
 
-	public GameObject object = new GameObject(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), mesh);
+	public GameObject object = new GameObject(new Vector3f(0, 0, 0), new Vector3f(0, 180, 0), new Vector3f(1.0f, 1.0f, 1.0f), mesh);
 
-	public Camera camera = new Camera(new Vector3f(0, 0, 1), new Vector3f(0, 0, 0));
+	public Camera camera = new Camera(new Vector3f(0, 0, 20), new Vector3f(0, 0, 0));
 
 	public void start() {
 		game = new Thread(this, "game");
+
 		game.start();
 	}
 	
@@ -94,7 +97,9 @@ public class Main implements Runnable {
 		renderer = new Renderer(window, shader);
 		window.setBackgroundColor(1.0f, 0, 0);
 		window.create();
+
 		mesh.create();
+
 		shader.create();
 	}
 	
@@ -105,6 +110,7 @@ public class Main implements Runnable {
 			render();
 			if(Input.isKeyDown(GLFW.GLFW_KEY_F11)) window.setFullscreen(!window.isFullscreen());
 			if(Input.isButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT)) window.mouseState(true);
+			if(Input.isButtonDown(GLFW.GLFW_MOUSE_BUTTON_RIGHT)) window.mouseState(false);
 		}
 		close();
 	}
@@ -124,7 +130,7 @@ public class Main implements Runnable {
 		mesh.destroy();
 		shader.destroy();
 	}
-	
+
 	public static void main(String[] args) {
 		new Main().start();
 	}

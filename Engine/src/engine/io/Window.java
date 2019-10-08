@@ -20,6 +20,7 @@ public class Window {
 	private boolean isResized;
 	private boolean isFullscreen;
 	private int[] windowPosX = new int[1], windowPosY = new int[1];
+	private boolean mouseState = false;
 
 	private Matrix4f projection;
 	
@@ -136,7 +137,11 @@ public class Window {
 	}
 
 	public void mouseState(boolean lock) {
+		if(!lock) {
+			GLFW.glfwSetCursorPos(window, width/2, height/2);
+		}
 		GLFW.glfwSetInputMode(window, GLFW.GLFW_CURSOR, lock ? GLFW.GLFW_CURSOR_DISABLED : GLFW.GLFW_CURSOR_NORMAL);
+		Input.setMouseLocked(lock);
 	}
 
 	public int getWidth() {
