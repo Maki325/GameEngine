@@ -37,6 +37,7 @@ public class Camera {
         if(!Input.getMouseLock()) return;
 
         rotation = Vector3f.add(rotation, new Vector3f(-dy * mouseSensitivity, -dx * mouseSensitivity, 0));
+        rotation.setX(Math.max(Math.min(90, rotation.getX()), -90));
     }
 
     public Vector3f getPosition() {

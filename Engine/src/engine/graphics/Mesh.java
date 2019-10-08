@@ -1,5 +1,6 @@
 package engine.graphics;
 
+import engine.maths.Vector3f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
@@ -15,6 +16,8 @@ public class Mesh {
     private int[] indices;
     private int vao, pbo, ibo, cbo, tbo;
     private Material material;
+    private Vector3f color;
+    private boolean isCreated = false;
 
     public Mesh(Vertex[] vertices, int[] indices, Material material) {
         this.vertices = vertices;
@@ -22,8 +25,14 @@ public class Mesh {
         this.material = material;
     }
 
+    public Mesh(Vertex[] vertices, int[] indices, Vector3f color) {
+        this.vertices = vertices;
+        this.indices = indices;
+        this.color = color;
+    }
+
     public void create() {
-        material.create();
+        if(material != null) material.create();
 
         vao = GL30.glGenVertexArrays();
         GL30.glBindVertexArray(vao);
@@ -37,6 +46,21 @@ public class Mesh {
         }
         positionBuffer.put(positionData).flip();
         pbo = storeData(positionBuffer, 0, 3);
+
+        //
+        if(color != null) {
+            FloatBuffer colorBuffer = MemoryUtil.memAllocFloat(vertices.length * 3);
+            float[] colorData = new float[vertices.length * 3];
+            for (int i = 0; i < vertices.length; i++) {
+                colorData[i * 3] = color.getX();
+                colorData[i * 3 + 1] = color.getY();
+                colorData[i * 3 + 2] = color.getZ();
+            }
+            colorBuffer.put(colorData).flip();
+
+            cbo = storeData(colorBuffer, 1, 3);
+        }
+        //
 
         //
         FloatBuffer textureBuffer = MemoryUtil.memAllocFloat(vertices.length * 2);
@@ -56,6 +80,8 @@ public class Mesh {
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, ibo);
         GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL15.GL_STATIC_DRAW);
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
+
+        isCreated = true;
     }
 
     private int storeData(FloatBuffer buffer, int index, int size) {
@@ -112,4 +138,11 @@ public class Mesh {
         return material;
     }
 
+    public Vector3f getColor() {
+        return color;
+    }
+
+    public boolean isCreated() {
+        return isCreated;
+    }
 }

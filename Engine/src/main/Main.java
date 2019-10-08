@@ -19,7 +19,8 @@ public class Main implements Runnable {
 	public Shader shader;
 	public final int WIDTH = 1280, HEIGHT = 720;
 
-	public Mesh mesh = OBJLoader.load("/models/stall.obj", "/textures/stallTexture.png"); /*new Mesh(new Vertex[] {
+	public Mesh mesh = OBJLoader.load("/models/stall.obj", "/textures/stallTexture.png");
+	public Mesh meshColor = OBJLoader.load("/models/stall.obj", new Vector3f(0.0f, 0.0f, 0.0f));/*new Mesh(new Vertex[] {
 			//Back face
 			new Vertex(new Vector3f(-0.5f,  0.5f, -0.5f), new Vector2f(0.0f, 0.0f)),
 			new Vertex(new Vector3f(-0.5f, -0.5f, -0.5f), new Vector2f(0.0f, 1.0f)),
@@ -82,6 +83,7 @@ public class Main implements Runnable {
 	}, new Material("/textures/desert.png"));*/
 
 	public GameObject object = new GameObject(new Vector3f(0, 0, 0), new Vector3f(0, 180, 0), new Vector3f(1.0f, 1.0f, 1.0f), mesh);
+	public GameObject objectColor = new GameObject(new Vector3f(0, 0, 0), new Vector3f(0, 180, 0), new Vector3f(1.0f, 1.0f, 1.0f), meshColor);
 
 	public Camera camera = new Camera(new Vector3f(0, 0, 20), new Vector3f(0, 0, 0));
 
@@ -95,10 +97,11 @@ public class Main implements Runnable {
 		window = new Window(WIDTH, HEIGHT, "Game");
 		shader = new Shader("/shaders/mainVertex.glsl", "/shaders/mainFragment.glsl");
 		renderer = new Renderer(window, shader);
-		window.setBackgroundColor(1.0f, 0, 0);
+		window.setBackgroundColor(1.0f, 0.0f, 0.0f);
 		window.create();
 
 		mesh.create();
+		meshColor.create();
 
 		shader.create();
 	}
@@ -122,6 +125,7 @@ public class Main implements Runnable {
 	
 	private void render() {
 		renderer.renderMesh(object, camera);
+		//renderer.renderMesh(objectColor, camera);
 		window.swapBuffers();
 	}
 

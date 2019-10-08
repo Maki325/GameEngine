@@ -15,7 +15,17 @@ import java.util.List;
 
 public class OBJLoader {
 
+    public static Mesh load(String path, Vector3f color) {
+        VertexIndices vertexIndices = getVerticesAndIndices(path);
+        return new Mesh(vertexIndices.verticesArray, vertexIndices.indicesArray, color);
+    }
+
     public static Mesh load(String path, String texturePath) {
+        VertexIndices vertexIndices = getVerticesAndIndices(path);
+        return new Mesh(vertexIndices.verticesArray, vertexIndices.indicesArray, new Material(texturePath));
+    }
+
+    private static VertexIndices getVerticesAndIndices(String path) {
         List<Vector3f> positions = new ArrayList<>();
         List<Vector2f> texture = new ArrayList<>();
         List<Integer> indices = new ArrayList<>();
@@ -61,7 +71,18 @@ public class OBJLoader {
             indicesArray[i] = indices.get(i);
         }
 
-        return new Mesh(verticesArray, indicesArray, new Material(texturePath));
+        return new VertexIndices(verticesArray, indicesArray);
+    }
+
+    private static class VertexIndices {
+
+        public Vertex[] verticesArray;
+        public int[] indicesArray;
+
+        public VertexIndices(Vertex[] verticesArray, int[] indicesArray) {
+            this.verticesArray = verticesArray;
+            this.indicesArray = indicesArray;
+        }
     }
 
 }
