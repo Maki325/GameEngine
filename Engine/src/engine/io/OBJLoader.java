@@ -1,8 +1,9 @@
 package engine.io;
 
 import engine.graphics.Material;
-import engine.graphics.Mesh;
+import engine.graphics.mesh.Mesh;
 import engine.graphics.Vertex;
+import engine.graphics.mesh.Mesh3D;
 import engine.maths.Vector2f;
 import engine.maths.Vector3f;
 import engine.utils.FileUtils;
@@ -15,14 +16,14 @@ import java.util.List;
 
 public class OBJLoader {
 
-    public static Mesh load(String path, Vector3f color) {
+    public static Mesh3D load(String path, Vector3f color) {
         VertexIndices vertexIndices = getVerticesAndIndices(path);
-        return new Mesh(vertexIndices.verticesArray, vertexIndices.indicesArray, color);
+        return new Mesh3D(vertexIndices.verticesArray, vertexIndices.indicesArray, color);
     }
 
-    public static Mesh load(String path, String texturePath) {
+    public static Mesh3D load(String path, String texturePath) {
         VertexIndices vertexIndices = getVerticesAndIndices(path);
-        return new Mesh(vertexIndices.verticesArray, vertexIndices.indicesArray, new Material(texturePath));
+        return new Mesh3D(vertexIndices.verticesArray, vertexIndices.indicesArray, new Material(texturePath));
     }
 
     private static VertexIndices getVerticesAndIndices(String path) {

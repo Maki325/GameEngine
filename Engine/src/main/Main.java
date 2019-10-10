@@ -1,11 +1,17 @@
 package main;
 
-import engine.graphics.Mesh;
+import engine.graphics.Material;
+import engine.graphics.Vertex2D;
+import engine.graphics.gui.GuiRenderer;
+import engine.graphics.mesh.Mesh;
 import engine.graphics.Renderer;
 import engine.graphics.Shader;
+import engine.graphics.mesh.Mesh2D;
+import engine.graphics.mesh.Mesh3D;
 import engine.io.Input;
 import engine.io.OBJLoader;
 import engine.io.Window;
+import engine.maths.Vector2f;
 import engine.maths.Vector3f;
 import engine.objects.Camera;
 import engine.objects.GameObject;
@@ -16,11 +22,12 @@ public class Main implements Runnable {
 	public Thread game;
 	public Window window;
 	public Renderer renderer;
-	public Shader shader;
+	public GuiRenderer guiRenderer;
+	public Shader shader, guiShader;
 	public final int WIDTH = 1280, HEIGHT = 720;
 
-	public Mesh mesh = OBJLoader.load("/models/stall.obj", "/textures/stallTexture.png");
-	public Mesh meshColor = OBJLoader.load("/models/stall.obj", new Vector3f(0.0f, 0.0f, 0.0f));/*new Mesh(new Vertex[] {
+	public Mesh3D mesh = OBJLoader.load("/models/stall.obj", "/textures/stallTexture.png");
+	public Mesh3D meshColor = OBJLoader.load("/models/stall.obj", new Vector3f(0.0f, 0.0f, 0.0f));/*new Mesh(new Vertex[] {
 			//Back face
 			new Vertex(new Vector3f(-0.5f,  0.5f, -0.5f), new Vector2f(0.0f, 0.0f)),
 			new Vertex(new Vector3f(-0.5f, -0.5f, -0.5f), new Vector2f(0.0f, 1.0f)),
@@ -85,6 +92,17 @@ public class Main implements Runnable {
 	public GameObject object = new GameObject(new Vector3f(0, 0, 0), new Vector3f(0, 180, 0), new Vector3f(1.0f, 1.0f, 1.0f), mesh);
 	public GameObject objectColor = new GameObject(new Vector3f(0, 0, 0), new Vector3f(0, 180, 0), new Vector3f(1.0f, 1.0f, 1.0f), meshColor);
 
+	public Mesh mesh2d = new Mesh2D(new Vertex2D[] {
+			new Vertex2D(new Vector2f(-0.5f,  0.5f), new Vector2f(0.0f, 0.0f)),
+			new Vertex2D(new Vector2f(-0.5f, -0.5f), new Vector2f(0.0f, 1.0f)),
+			new Vertex2D(new Vector2f( 0.5f, -0.5f), new Vector2f(1.0f, 1.0f)),
+			new Vertex2D(new Vector2f( 0.5f,  0.5f), new Vector2f(1.0f, 0.0f))
+		}, new int[] {
+			0, 1, 2,
+			0, 3, 2
+		},
+		new Material("/textures/desert.png"));
+
 	public Camera camera = new Camera(new Vector3f(0, 0, 20), new Vector3f(0, 0, 0));
 
 	public void start() {
@@ -95,15 +113,19 @@ public class Main implements Runnable {
 	
 	public void init() {
 		window = new Window(WIDTH, HEIGHT, "Game");
-		shader = new Shader("/shaders/mainVertex.glsl", "/shaders/mainFragment.glsl");
+		shader = new Shader("/shaders/main/mainVertex.glsl", "/shaders/main/mainFragment.glsl");
+		guiShader = new Shader("/shaders/gui/mainVertex.glsl", "/shaders/gui/mainFragment.glsl");
 		renderer = new Renderer(window, shader);
+		guiRenderer = new GuiRenderer(window, guiShader);
 		window.setBackgroundColor(1.0f, 0.0f, 0.0f);
 		window.create();
 
 		mesh.create();
 		meshColor.create();
+		mesh2d.create();
 
 		shader.create();
+		guiShader.create();
 	}
 	
 	public void run() {
@@ -125,6 +147,9 @@ public class Main implements Runnable {
 	
 	private void render() {
 		renderer.renderMesh(object, camera);
+		//guiRenderer.render(1170, 610, 100, 100, new Vector3f(0, 0, 1));
+		guiRenderer.render(1170, 610, 100, 100, new Material("/textures/desert.png"));
+
 		//renderer.renderMesh(objectColor, camera);
 		window.swapBuffers();
 	}
