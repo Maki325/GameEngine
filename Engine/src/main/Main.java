@@ -13,6 +13,7 @@ import engine.io.OBJLoader;
 import engine.io.Window;
 import engine.maths.Vector2f;
 import engine.maths.Vector3f;
+import engine.maths.Vector4f;
 import engine.objects.Camera;
 import engine.objects.GameObject;
 import org.lwjgl.glfw.GLFW;
@@ -27,7 +28,7 @@ public class Main implements Runnable {
 	public final int WIDTH = 1280, HEIGHT = 720;
 
 	public Mesh3D mesh = OBJLoader.load("/models/stall.obj", "/textures/stallTexture.png");
-	public Mesh3D meshColor = OBJLoader.load("/models/stall.obj", new Vector3f(0.0f, 0.0f, 0.0f));/*new Mesh(new Vertex[] {
+	public Mesh3D meshColor = OBJLoader.load("/models/stall.obj", new Vector4f(0.0f, 0.0f, 0.0f, 1.0f));/*new Mesh(new Vertex[] {
 			//Back face
 			new Vertex(new Vector3f(-0.5f,  0.5f, -0.5f), new Vector2f(0.0f, 0.0f)),
 			new Vertex(new Vector3f(-0.5f, -0.5f, -0.5f), new Vector2f(0.0f, 1.0f)),
@@ -90,7 +91,7 @@ public class Main implements Runnable {
 	}, new Material("/textures/desert.png"));*/
 
 	public GameObject object = new GameObject(new Vector3f(0, 0, 0), new Vector3f(0, 180, 0), new Vector3f(1.0f, 1.0f, 1.0f), mesh);
-	public GameObject objectColor = new GameObject(new Vector3f(0, 0, 0), new Vector3f(0, 180, 0), new Vector3f(1.0f, 1.0f, 1.0f), meshColor);
+	public GameObject objectColor = new GameObject(new Vector3f(0, 10, 0), new Vector3f(0, 180, 0), new Vector3f(1.0f, 1.0f, 1.0f), meshColor);
 
 	public Mesh mesh2d = new Mesh2D(new Vertex2D[] {
 			new Vertex2D(new Vector2f(-0.5f,  0.5f), new Vector2f(0.0f, 0.0f)),
@@ -104,6 +105,8 @@ public class Main implements Runnable {
 		new Material("/textures/desert.png"));
 
 	public Camera camera = new Camera(new Vector3f(0, 0, 20), new Vector3f(0, 0, 0));
+
+	Material guiMaterial = new Material("/textures/desert.png");
 
 	public void start() {
 		game = new Thread(this, "game");
@@ -123,6 +126,8 @@ public class Main implements Runnable {
 		mesh.create();
 		meshColor.create();
 		mesh2d.create();
+
+		guiMaterial.create();
 
 		shader.create();
 		guiShader.create();
@@ -144,13 +149,16 @@ public class Main implements Runnable {
 		window.update();
 		camera.update();
 	}
-	
+
 	private void render() {
 		renderer.renderMesh(object, camera);
 		//guiRenderer.render(1170, 610, 100, 100, new Vector3f(0, 0, 1));
-		guiRenderer.render(1170, 610, 100, 100, new Material("/textures/desert.png"));
+		guiRenderer.render(window.getWidth() - 110,  window.getHeight() - 110, 100, 100, guiMaterial);
+		guiRenderer.render(10,  10, 100, 100, guiMaterial);
+		guiRenderer.render(10,  window.getHeight() - 110, 100, 100, new Vector4f(0, 0, 1, 0.25f));
+		guiRenderer.render(window.getWidth() - 110,  10, 100, 100, new Vector3f(0, 0, 1));
 
-		//renderer.renderMesh(objectColor, camera);
+		renderer.renderMesh(objectColor, camera);
 		window.swapBuffers();
 	}
 

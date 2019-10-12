@@ -20,6 +20,7 @@ public class Material {
     }
 
     public void create() {
+        System.out.println("Material created!");
         String[] dots = path.split("[.]");
         try {
             texture = TextureLoader.getTexture(dots[dots.length-1], Material.class.getResourceAsStream(path), GL11.GL_NEAREST);

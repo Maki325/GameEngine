@@ -1,11 +1,11 @@
 package engine.io;
 
 import engine.graphics.Material;
-import engine.graphics.mesh.Mesh;
 import engine.graphics.Vertex;
 import engine.graphics.mesh.Mesh3D;
 import engine.maths.Vector2f;
 import engine.maths.Vector3f;
+import engine.maths.Vector4f;
 import engine.utils.FileUtils;
 
 import java.io.BufferedReader;
@@ -16,7 +16,7 @@ import java.util.List;
 
 public class OBJLoader {
 
-    public static Mesh3D load(String path, Vector3f color) {
+    public static Mesh3D load(String path, Vector4f color) {
         VertexIndices vertexIndices = getVerticesAndIndices(path);
         return new Mesh3D(vertexIndices.verticesArray, vertexIndices.indicesArray, color);
     }
